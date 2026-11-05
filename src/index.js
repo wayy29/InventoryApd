@@ -3,13 +3,11 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Import Routers (Pastikan path dan nama berkas route sesuai dengan struktur proyek Anda)
+// Import router yang BENAR-BENAR ADA di folder src/routes/ kamu
 import authRoutes from './routes/authRoutes.js';
 import apdRoutes from './routes/apdRoutes.js';
-import stokRoutes from './routes/stokRoutes.js';
 import distribusiRoutes from './routes/distribusiRoutes.js';
 import notifikasiRoutes from './routes/notifikasiRoutes.js';
-import userRoutes from './routes/userRoutes.js';
 
 // Penanganan __dirname pada ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -25,20 +23,18 @@ app.use(express.urlencoded({ extended: true }));
 // Melayani File Statis Frontend (Folder public)
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Health Check API Endpoint
+// Endpoint Health Check API
 app.get('/api/health', (req, res) => {
   res
     .status(200)
     .json({ status: 'OK', message: 'Backend Inventory APD Running' });
 });
 
-// Mounting Routes API
+// Mounting Routes (Hanya yang ada filenya)
 app.use('/api/auth', authRoutes);
 app.use('/api/apd', apdRoutes);
-app.use('/api/stok', stokRoutes);
 app.use('/api/distribusi', distribusiRoutes);
 app.use('/api/notifikasi', notifikasiRoutes);
-app.use('/api/users', userRoutes);
 
 // Fallback Route untuk Single Page Application (SPA)
 app.get('*', (req, res) => {
@@ -54,13 +50,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Jalankan listener port hanya untuk lingkungan lokal (Non-Vercel)
+// Jalankan listener port hanya untuk lingkungan lokal
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`Server berjalan lokal di http://localhost:${PORT}`);
+    console.log(`Server berjalan di http://localhost:${PORT}`);
   });
 }
 
-// Ekspor default wajib untuk Vercel Serverless
 export default app;
