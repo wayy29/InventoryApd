@@ -35,3 +35,5 @@ app.use('/api/kondisi', kondisiRoutes); // 2. Registrasi Endpoint Kondisi
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+export default app;
