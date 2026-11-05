@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  KARYAWAN
+}
+
+enum Kondisi {
+  BAIK
+  RUSAK_RINGAN
+  RUSAK_BERAT
+  TIDAK_LAYAK
+  KEDALUWARSA
+}
+
+enum JenisTransaksi {
+  MASUK
+  KELUAR
+  PENYESUAIAN
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  nama         String
+  password     String
+  role         Role           @default(KARYAWAN)
+  riwayatLogin RiwayatLogin[]
+}
+
+model RiwayatLogin {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  waktu   DateTime @default(now())
+}
+
+model Apd {
+  id               Int                @id @default(autoincrement())
+  kodeApd          String             @unique
+  namaApd          String
+  jenis            String
+  satuan           String
+  stokBatches      StokBatch[]
+  distribusi       Distribusi[]
+  riwayatTransaksi RiwayatTransaksi[]
+}
+
+model StokBatch {
+  id               Int                @id @default(autoincrement())
+  apdId            Int
+  apd              Apd                @relation(fields: [apdId], references: [id], onDelete: Cascade)
+  jumlah           Int
+  lokasi           String
+  tanggalMasuk     DateTime           @default(now())
+  tglKedaluwarsa   DateTime
+  kondisi          Kondisi            @default(BAIK)
+  riwayatKondisi   RiwayatKondisi[]
+  riwayatTransaksi RiwayatTransaksi[]
+}
+
+enum StatusDistribusi {
+  DIPROSES
+  DISETUJUI
+  DITOLAK
+}
+
+model Distribusi {
+  id              Int              @id @default(autoincrement())
+  apdId           Int
+  apd             Apd              @relation(fields: [apdId], references: [id], onDelete: Cascade)
+  tanggal         DateTime         @default(now())
+  namaPenerima    String
+  unitPenerima    String
+  jumlahDiberikan Int
+  status          StatusDistribusi @default(DIPROSES)
+  keterangan      String?
+}
+
+model RiwayatKondisi {
+  id          Int       @id @default(autoincrement())
+  batchId     Int
+  batch       StokBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  tanggalUbah DateTime  @default(now())
+  kondisiLama Kondisi
+  kondisiBaru Kondisi
+  catatan     String?
+}
+
+model RiwayatTransaksi {
+  id             Int            @id @default(autoincrement())
+  tanggal        DateTime       @default(now())
+  jenisTransaksi JenisTransaksi
+  apdId          Int
+  apd            Apd            @relation(fields: [apdId], references: [id], onDelete: Cascade)
+  batchId        Int?
+  batch          StokBatch?     @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  jumlah         Int
+  keterangan     String?
+}
