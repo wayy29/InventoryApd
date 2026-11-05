@@ -381,8 +381,9 @@
                         kedaluwarsa, dan terdistribusi secara tepat demi perlindungan kerja yang optimal.</p>
                 </div>
                 <div class="apd-img-container">
-                    <img src="MacamAPD.jfif" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063822.png'"
-                        alt="Gambar APD" class="apd-img">
+                    <img src="MacamAPD.jfif"
+                        onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063822.png'" alt="Gambar APD"
+                        class="apd-img">
                 </div>
             </div>
 
@@ -612,7 +613,8 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        // Path relatif agar otomatis menyesuaikan dengan domain Vercel maupun localhost
+        const API_URL = '/api';
         let currentUser = null;
 
         window.onload = () => {
@@ -777,15 +779,15 @@
                         : '-';
 
                     tbody.innerHTML += `
-          <tr>
-            <td><b>${item.kodeApd}</b></td>
-            <td>${item.namaApd}</td>
-            <td>${item.jenis}</td>
-            <td>${item.satuan}</td>
-            <td><span class="badge badge-success">${totalStok} ${item.satuan}</span></td>
-            <td>${tombolAksi}</td>
-          </tr>
-        `;
+      <tr>
+        <td><b>${item.kodeApd}</b></td>
+        <td>${item.namaApd}</td>
+        <td>${item.jenis}</td>
+        <td>${item.satuan}</td>
+        <td><span class="badge badge-success">${totalStok} ${item.satuan}</span></td>
+        <td>${tombolAksi}</td>
+      </tr>
+    `;
 
                     const option = `<option value="${item.id}">${item.kodeApd} - ${item.namaApd}</option>`;
                     if (selectBatch) selectBatch.innerHTML += option;
@@ -837,7 +839,6 @@
             }
         }
 
-        // FUNGSI MUAT BATCH APD & KONDISI FISIK
         async function loadStokBatchKondisi() {
             try {
                 const res = await fetch(`${API_URL}/kondisi/batch`);
@@ -860,15 +861,15 @@
                     if (batch.kondisi === 'RUSAK_BERAT' || batch.kondisi === 'TIDAK_LAYAK' || batch.kondisi === 'KEDALUWARSA') badgeColor = 'badge-danger';
 
                     tbody.innerHTML += `
-          <tr>
-            <td><b>Batch #${batch.id}</b></td>
-            <td><b>${batch.apd ? batch.apd.kodeApd : '-'}</b> - ${batch.apd ? batch.apd.namaApd : '-'}</td>
-            <td>${batch.jumlah}</td>
-            <td>${batch.lokasi}</td>
-            <td>${new Date(batch.tglKedaluwarsa).toLocaleDateString('id-ID')}</td>
-            <td><span class="badge ${badgeColor}">${batch.kondisi}</span></td>
-          </tr>
-        `;
+      <tr>
+        <td><b>Batch #${batch.id}</b></td>
+        <td><b>${batch.apd ? batch.apd.kodeApd : '-'}</b> - ${batch.apd ? batch.apd.namaApd : '-'}</td>
+        <td>${batch.jumlah}</td>
+        <td>${batch.lokasi}</td>
+        <td>${new Date(batch.tglKedaluwarsa).toLocaleDateString('id-ID')}</td>
+        <td><span class="badge ${badgeColor}">${batch.kondisi}</span></td>
+      </tr>
+    `;
 
                     if (selectBatchKondisi) {
                         selectBatchKondisi.innerHTML += `<option value="${batch.id}">Batch #${batch.id} - ${batch.apd ? batch.apd.namaApd : '-'} (${batch.kondisi})</option>`;
@@ -879,7 +880,6 @@
             }
         }
 
-        // FUNGSI UPDATE KONDISI BATCH (ADMIN)
         async function prosesUbahKondisi(e) {
             e.preventDefault();
             const payload = {
@@ -910,7 +910,6 @@
             }
         }
 
-        // FUNGSI MUAT LOG RIWAYAT KONDISI
         async function loadRiwayatKondisi() {
             try {
                 const res = await fetch(`${API_URL}/kondisi/riwayat`);
@@ -927,14 +926,14 @@
 
                 data.data.forEach(r => {
                     tbody.innerHTML += `
-          <tr>
-            <td>${new Date(r.tanggalUbah).toLocaleString('id-ID')}</td>
-            <td><b>Batch #${r.batchId}</b> - ${r.batch && r.batch.apd ? r.batch.apd.namaApd : '-'}</td>
-            <td><span class="badge badge-info">${r.kondisiLama}</span></td>
-            <td><span class="badge badge-warning">${r.kondisiBaru}</span></td>
-            <td>${r.catatan || '-'}</td>
-          </tr>
-        `;
+      <tr>
+        <td>${new Date(r.tanggalUbah).toLocaleString('id-ID')}</td>
+        <td><b>Batch #${r.batchId}</b> - ${r.batch && r.batch.apd ? r.batch.apd.namaApd : '-'}</td>
+        <td><span class="badge badge-info">${r.kondisiLama}</span></td>
+        <td><span class="badge badge-warning">${r.kondisiBaru}</span></td>
+        <td>${r.catatan || '-'}</td>
+      </tr>
+    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -976,14 +975,14 @@
                 }
                 data.data.forEach(item => {
                     tbody.innerHTML += `
-          <tr>
-            <td>${item.kodeApd}</td>
-            <td>${item.namaApd}</td>
-            <td>${item.sisaStok}</td>
-            <td>${new Date(item.tanggalKedaluwarsa).toLocaleDateString('id-ID')}</td>
-            <td><span class="badge badge-danger">${item.status}</span></td>
-          </tr>
-        `;
+      <tr>
+        <td>${item.kodeApd}</td>
+        <td>${item.namaApd}</td>
+        <td>${item.sisaStok}</td>
+        <td>${new Date(item.tanggalKedaluwarsa).toLocaleDateString('id-ID')}</td>
+        <td><span class="badge badge-danger">${item.status}</span></td>
+      </tr>
+    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -1003,14 +1002,14 @@
                 data.data.forEach(item => {
                     const isMasuk = item.jenisTransaksi === 'MASUK';
                     tbody.innerHTML += `
-          <tr>
-            <td>${new Date(item.tanggal).toLocaleString('id-ID')}</td>
-            <td><span class="badge ${isMasuk ? 'badge-success' : 'badge-danger'}">${item.jenisTransaksi}</span></td>
-            <td><b>${item.apd ? item.apd.kodeApd : '-'}</b> - ${item.apd ? item.apd.namaApd : '-'}</td>
-            <td><b>${isMasuk ? '+' : '-'}${item.jumlah}</b></td>
-            <td>${item.keterangan || '-'}</td>
-          </tr>
-        `;
+      <tr>
+        <td>${new Date(item.tanggal).toLocaleString('id-ID')}</td>
+        <td><span class="badge ${isMasuk ? 'badge-success' : 'badge-danger'}">${item.jenisTransaksi}</span></td>
+        <td><b>${item.apd ? item.apd.kodeApd : '-'}</b> - ${item.apd ? item.apd.namaApd : '-'}</td>
+        <td><b>${isMasuk ? '+' : '-'}${item.jumlah}</b></td>
+        <td>${item.keterangan || '-'}</td>
+      </tr>
+    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -1038,22 +1037,22 @@
                     let tombolAksi = '-';
                     if (currentUser && currentUser.role === 'ADMIN' && d.status === 'DIPROSES') {
                         tombolAksi = `
-            <button style="background:#28a745; width:auto; padding:4px 8px; font-size:0.75rem; margin-right:4px;" onclick="eksekusiApproval(${d.id}, 'setujui')">Setujui</button>
-            <button style="background:#dc3545; width:auto; padding:4px 8px; font-size:0.75rem;" onclick="eksekusiApproval(${d.id}, 'tolak')">Tolak</button>
-          `;
+        <button style="background:#28a745; width:auto; padding:4px 8px; font-size:0.75rem; margin-right:4px;" onclick="eksekusiApproval(${d.id}, 'setujui')">Setujui</button>
+        <button style="background:#dc3545; width:auto; padding:4px 8px; font-size:0.75rem;" onclick="eksekusiApproval(${d.id}, 'tolak')">Tolak</button>
+      `;
                     }
 
                     tbody.innerHTML += `
-          <tr>
-            <td>${new Date(d.tanggal).toLocaleString('id-ID')}</td>
-            <td><b>${d.apd ? d.apd.kodeApd : '-'}</b> - ${d.apd ? d.apd.namaApd : '-'}</td>
-            <td><b>${d.jumlahDiberikan}</b></td>
-            <td>${d.namaPenerima}</td>
-            <td>${d.unitPenerima}</td>
-            <td><span class="badge ${badgeClass}">${d.status}</span></td>
-            <td>${tombolAksi}</td>
-          </tr>
-        `;
+      <tr>
+        <td>${new Date(d.tanggal).toLocaleString('id-ID')}</td>
+        <td><b>${d.apd ? d.apd.kodeApd : '-'}</b> - ${d.apd ? d.apd.namaApd : '-'}</td>
+        <td><b>${d.jumlahDiberikan}</b></td>
+        <td>${d.namaPenerima}</td>
+        <td>${d.unitPenerima}</td>
+        <td><span class="badge ${badgeClass}">${d.status}</span></td>
+        <td>${tombolAksi}</td>
+      </tr>
+    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -1103,14 +1102,14 @@
                             : `<button class="btn-logout" style="padding: 4px 8px; font-size: 0.75rem;" onclick="hapusUser(${u.id}, '${u.username}')">Hapus</button>`;
 
                         tbodyUsers.innerHTML += `
-            <tr>
-              <td>${u.id}</td>
-              <td><b>${u.username}</b></td>
-              <td>${u.nama}</td>
-              <td><span class="badge ${u.role === 'ADMIN' ? 'badge-danger' : 'badge-info'}">${u.role}</span></td>
-              <td>${tombolAksi}</td>
-            </tr>
-          `;
+        <tr>
+          <td>${u.id}</td>
+          <td><b>${u.username}</b></td>
+          <td>${u.nama}</td>
+          <td><span class="badge ${u.role === 'ADMIN' ? 'badge-danger' : 'badge-info'}">${u.role}</span></td>
+          <td>${tombolAksi}</td>
+        </tr>
+      `;
                     });
                 }
             } catch (err) {
@@ -1125,13 +1124,13 @@
                     tbodyLogs.innerHTML = '';
                     dataLogs.data.forEach(l => {
                         tbodyLogs.innerHTML += `
-            <tr>
-              <td>${new Date(l.waktu).toLocaleString('id-ID')}</td>
-              <td><b>${l.user ? l.user.username : '-'}</b></td>
-              <td>${l.user ? l.user.nama : '-'}</td>
-              <td><span class="badge ${l.user && l.user.role === 'ADMIN' ? 'badge-danger' : 'badge-info'}">${l.user ? l.user.role : '-'}</span></td>
-            </tr>
-          `;
+        <tr>
+          <td>${new Date(l.waktu).toLocaleString('id-ID')}</td>
+          <td><b>${l.user ? l.user.username : '-'}</b></td>
+          <td>${l.user ? l.user.nama : '-'}</td>
+          <td><span class="badge ${l.user && l.user.role === 'ADMIN' ? 'badge-danger' : 'badge-info'}">${l.user ? l.user.role : '-'}</span></td>
+        </tr>
+      `;
                     });
                 }
             } catch (err) {
