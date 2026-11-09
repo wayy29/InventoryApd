@@ -740,10 +740,17 @@
             document.getElementById('userNamaDisplay').innerText = currentUser.nama;
             document.getElementById('userRoleDisplay').innerText = currentUser.role;
 
+            const isAdmin = currentUser.role === 'ADMIN';
+
             const adminElements = document.querySelectorAll('.admin-only');
             adminElements.forEach(el => {
-                el.style.display = (currentUser.role === 'ADMIN') ? 'block' : 'none';
+                el.style.display = isAdmin ? 'block' : 'none';
             });
+
+            const formDistribusiContainer = document.getElementById('formDistribusiContainer');
+            if (formDistribusiContainer) {
+                formDistribusiContainer.style.display = isAdmin ? 'none' : 'block';
+            }
 
             loadMasterApd();
             loadNotifikasi();
